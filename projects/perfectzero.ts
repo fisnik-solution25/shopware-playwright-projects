@@ -8,10 +8,10 @@ import type { ProjectConfig } from '../src/config/types';
  * Secrets (admin credentials, basic auth) NEVER go here — use .env / CI variables.
  */
 const config: ProjectConfig = {
-  name: 'Shopware Demo (automated-testing)',
+  name: 'Perfect Zero',
   baseURL: 'https://https://dev-perfectzero.nextmp.net/',
-  locale: 'de-DE',
-  currencySymbol: '€',
+  locale: 'en-US',
+  currencySymbol: '$',
 
   features: {
     wishlist: false, // not enabled in the demo sales channel

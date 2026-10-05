@@ -15,7 +15,7 @@ import type { ProjectConfig } from '../src/config/types';
  * is separate and stays untouched; this profile covers the generic storefront only.
  */
 const config: ProjectConfig = {
-  name: 'Natchez (staging)',
+  name: 'Natchez',
   baseURL: 'https://f2yt3gogmjqkq-main-bvxea6i.us-2.tst.site/',
   locale: 'en-US',
   currencySymbol: '$',

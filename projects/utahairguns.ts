@@ -9,7 +9,7 @@ import type { ProjectConfig } from '../src/config/types';
  * Fill in every "TODO". Keep secrets out of this file (.env / CI variables).
  */
 const config: ProjectConfig = {
-  name: 'UAG',
+  name: 'Utah Air Guns',
   baseURL: 'https://stage.utahairguns.com',
   locale: 'en-US',
   currencySymbol: '$',

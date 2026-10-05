@@ -1,0 +1,111 @@
+# Playwright E2E — one job per environment (GitHub Environments hold the secrets)
+#
+# Setup: Settings → Environments → New environment, one per projects/<name>.ts
+#   (name must match the file, e.g. "natchez", "uag", "demo").
+#   Environment SECRETS : ADMIN_CLIENT_ID, ADMIN_CLIENT_SECRET (or ADMIN_USERNAME, ADMIN_PASSWORD),
+#                         HTTP_USERNAME, HTTP_PASSWORD, SW_ACCESS_KEY
+#   Environment VARIABLES: BASE_URL, ALLOW_WRITE_TESTS (default false), CLEANUP_TEST_DATA, EXTRA_BROWSERS
+#
+# Adding an environment = add projects/<name>.ts + a GitHub Environment + the name in the two lists below.
+
+name: Playwright
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 3 * * 1-5' # weekdays 03:00 UTC → full regression on every environment
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to test
+        type: choice
+        options: [all, natchez, uag, demo] # ← list 1
+        default: all
+      suite:
+        description: Test suite
+        type: choice
+        options: [smoke, full]
+        default: smoke
+
+concurrency:
+  group: playwright-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      envs: ${{ steps.pick.outputs.envs }}
+      suite: ${{ steps.pick.outputs.suite }}
+    steps:
+      - id: pick
+        env:
+          ALL_ENVS: '["natchez","uag","demo"]' # ← list 2
+          INPUT_ENV: ${{ inputs.environment }}
+          INPUT_SUITE: ${{ inputs.suite }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ -z "$INPUT_ENV" ] || [ "$INPUT_ENV" = "all" ]; then
+            echo "envs=$ALL_ENVS" >> "$GITHUB_OUTPUT"
+          else
+            echo "envs=[\"$INPUT_ENV\"]" >> "$GITHUB_OUTPUT"
+          fi
+          if [ "$EVENT" = "schedule" ] || [ "$INPUT_SUITE" = "full" ]; then
+            echo "suite=full" >> "$GITHUB_OUTPUT"
+          else
+            echo "suite=smoke" >> "$GITHUB_OUTPUT"
+          fi
+
+  test:
+    needs: plan
+    name: ${{ matrix.env }} · ${{ needs.plan.outputs.suite }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    # Keep the tag in sync with @playwright/test in package.json
+    container: mcr.microsoft.com/playwright:v1.63.0-noble
+    environment: ${{ matrix.env }}
+    strategy:
+      fail-fast: false # one broken staging must not cancel the others
+      matrix:
+        env: ${{ fromJSON(needs.plan.outputs.envs) }}
+    env:
+      CI: 'true'
+      HOME: /root # Firefox in the Playwright container needs this
+      PROJECT: ${{ matrix.env }}
+      SUITE: ${{ needs.plan.outputs.suite }}
+      BASE_URL: ${{ vars.BASE_URL }}
+      ALLOW_WRITE_TESTS: ${{ vars.ALLOW_WRITE_TESTS || 'false' }}
+      CLEANUP_TEST_DATA: ${{ vars.CLEANUP_TEST_DATA || 'true' }}
+      EXTRA_BROWSERS: ${{ vars.EXTRA_BROWSERS }}
+      HTTP_USERNAME: ${{ secrets.HTTP_USERNAME }}
+      HTTP_PASSWORD: ${{ secrets.HTTP_PASSWORD }}
+      ADMIN_CLIENT_ID: ${{ secrets.ADMIN_CLIENT_ID }}
+      ADMIN_CLIENT_SECRET: ${{ secrets.ADMIN_CLIENT_SECRET }}
+      ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+      ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      SW_ACCESS_KEY: ${{ secrets.SW_ACCESS_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Playwright (${{ env.SUITE }})
+        run: |
+          if [ "$SUITE" = "full" ]; then
+            npx playwright test
+          else
+            npx playwright test --grep @smoke --project=chromium
+          fi
+
+      - name: Upload report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-${{ matrix.env }}-${{ env.SUITE }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14

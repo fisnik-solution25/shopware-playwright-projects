@@ -132,7 +132,7 @@ const config: ProjectConfig = {
     shippingMethod: 'Ground Economy',
     // natches-auto-tests codes (O1W7X5U2 / T2J1N1T0) are tied to Curbstone/Sezzle cases and
     // expire — not reused until their rule conditions are checked via Admin API.
-       promotionCode: 'T2J1N1T0',
+       promotionCode: 'S3D8O6Q2',
   },
 
   redirects: [

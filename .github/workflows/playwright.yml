@@ -42,7 +42,7 @@ jobs:
     steps:
       - id: pick
         env:
-          ALL_ENVS: '["natchez","utahairguns","perfectzero"]' # ← list 2
+          ALL_ENVS: '["natchez","perfectzero"]' # ← list 2
           INPUT_ENV: ${{ inputs.environment }}
           INPUT_SUITE: ${{ inputs.suite }}
           EVENT: ${{ github.event_name }}

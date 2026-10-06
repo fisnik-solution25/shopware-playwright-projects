@@ -21,7 +21,7 @@ on:
       environment:
         description: Environment to test
         type: choice
-        options: [all, natchez, uag, demo] # ← list 1
+        options: [all, natchez, utahairguns, perfectzero] # ← list 1
         default: all
       suite:
         description: Test suite
@@ -42,7 +42,7 @@ jobs:
     steps:
       - id: pick
         env:
-          ALL_ENVS: '["natchez","uag","demo"]' # ← list 2
+          ALL_ENVS: '["natchez","utahairguns","perfectzero"]' # ← list 2
           INPUT_ENV: ${{ inputs.environment }}
           INPUT_SUITE: ${{ inputs.suite }}
           EVENT: ${{ github.event_name }}

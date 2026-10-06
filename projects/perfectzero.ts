@@ -9,7 +9,7 @@ import type { ProjectConfig } from '../src/config/types';
  */
 const config: ProjectConfig = {
   name: 'Perfect Zero',
-  baseURL: 'https://https://dev-perfectzero.nextmp.net/',
+   baseURL: 'https://dev-perfectzero.nextmp.net',
   locale: 'en-US',
   currencySymbol: '$',
 

@@ -1,2 +1,6 @@
 .DS_Store
 natchez-report/
+natchez-results.json
+natchez-results.json
+test-results/
+playwright-report/

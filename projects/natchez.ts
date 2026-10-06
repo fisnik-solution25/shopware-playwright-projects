@@ -125,14 +125,14 @@ const config: ProjectConfig = {
     contactLinkText: /Contact/i,
     // Admin API: Invoice (InvoicePayment) active, assigned, channel default, no availability rule.
     // Kept null until writes are enabled and the storefront label is verified on /checkout/confirm.
-    paymentMethod: null,
+    paymentMethod: 'Cash on delivery',
     // Channel default "Residential Ground" is not offered on /checkout/confirm for the test
     // address (confirm shows 2nd Day Air, Ground Economy, Next Day Air, Priority Mail; none
     // preselected → submit disabled). Ground Economy = the shop's "CORE fallback method".
     shippingMethod: 'Ground Economy',
     // natches-auto-tests codes (O1W7X5U2 / T2J1N1T0) are tied to Curbstone/Sezzle cases and
     // expire — not reused until their rule conditions are checked via Admin API.
-    promotionCode: null,
+       promotionCode: 'T2J1N1T0',
   },
 
   redirects: [

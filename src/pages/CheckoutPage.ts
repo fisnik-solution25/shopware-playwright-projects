@@ -58,10 +58,12 @@ export class CheckoutPage extends BasePage {
     if (paymentMethod) await this.selectPaymentMethod(paymentMethod);
   }
 
-  /** Accepts TOS, applies configured payment/shipping, places the order. Returns the order number if shown. */
+   /** Accepts TOS, applies configured payment/shipping, places the order. Returns the order number if shown. */
   async placeOrder(): Promise<string | undefined> {
     await this.applyConfiguredMethods();
     await this.acceptTerms();
+    // Some shops (e.g. Natchez with Vertex tax) keep the submit button disabled until async checks finish.
+    await expect(this.submitButton).toBeEnabled({ timeout: 45_000 });
     await Promise.all([
       this.page.waitForURL(new RegExp(escapeRegExp(this.cfg.routes.checkoutFinish)), { timeout: 45_000 }),
       this.submitButton.click(),

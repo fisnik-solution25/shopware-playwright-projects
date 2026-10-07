@@ -50,9 +50,16 @@ export class AuthPage extends BasePage {
   // ---------------- registration ----------------
   /** Shops that render registration on its own page (no register form on /account/login). */
   private async ensureRegisterForm(): Promise<void> {
-    if (await this.registerForm.count()) return;
+    if (await this.registerForm.count()) return this.showRegisterForm();
     if (!new URL(this.page.url()).pathname.startsWith(this.cfg.routes.login)) return;
     await this.goto(this.cfg.routes.register);
+    await expect(this.registerForm).toBeVisible();
+  }
+
+  /** Some checkouts hide the register form behind a login/register chooser. No-op otherwise. */
+  async showRegisterForm(): Promise<void> {
+    if (!this.s.register.reveal || (await this.registerForm.isVisible())) return;
+    await this.$(this.s.register.reveal).locator('visible=true').first().click();
     await expect(this.registerForm).toBeVisible();
   }
 

@@ -25,9 +25,11 @@ test.describe('Product detail page', () => {
     const v = cfg.testData.variantProduct;
     await product.open(v);
     await expect(product.configuratorGroups).toHaveCount(v.optionGroups.length);
+    const urlBefore = page.url();
     const { before, after } = await product.switchVariant(v.optionGroups.length - 1);
     expect(after).not.toEqual(before);
-    await expect(page).toHaveURL(new RegExp(after.replace(/[.]/g, '\\.'), 'i'));
+    if (cfg.features.productNumberInUrl) await expect(page).toHaveURL(new RegExp(after.replace(/[.]/g, '\\.'), 'i'));
+    else await expect(page).not.toHaveURL(urlBefore);
   });
 
   test('breadcrumb links back to the category', async ({ product, cfg, page }) => {

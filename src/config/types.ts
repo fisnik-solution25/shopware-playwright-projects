@@ -38,6 +38,11 @@ export interface FeatureFlags {
   productBreadcrumb?: boolean;
   /** Header search shows the core suggest dropdown while typing. Default true; third-party search engines replace it. */
   searchSuggest?: boolean;
+  /**
+   * Variant SEO URLs contain the product number (e.g. /<slug>/<sku>). Default true; shops with
+   * name-only slugs set false — the variant test then only checks that the URL changed.
+   */
+  productNumberInUrl?: boolean;
 }
 
 /**

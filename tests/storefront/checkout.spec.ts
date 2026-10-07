@@ -11,6 +11,7 @@ test.describe('Checkout', () => {
     await cartHelper.add(cfg.testData.simpleProduct);
     await page.goto(cfg.routes.checkoutConfirm);
     await expect(page).toHaveURL(new RegExp(cfg.routes.checkoutRegister));
+    await auth.showRegisterForm();
     await expect(auth.registerForm).toBeVisible();
   });
 

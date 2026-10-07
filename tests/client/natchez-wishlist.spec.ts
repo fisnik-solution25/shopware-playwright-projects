@@ -7,6 +7,8 @@ import { test, expect } from '../../src/client/fixtures';
  * Read-only: opens the modal, does not create a list.
  */
 test.describe('Client: multiple wishlists', { tag: ['@client', '@smoke'] }, () => {
+  test.skip(({ cfg }) => cfg.name !== 'Natchez', 'Natchez-specific multi-wishlist plugin');
+
   test('wishlist button opens the list chooser for the product', async ({ page, cfg, product }) => {
     const p = cfg.testData.simpleProduct;
     await product.open(p);

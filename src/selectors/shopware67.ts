@@ -179,6 +179,8 @@ export const shopware67Selectors = {
     differentShipping: '.js-different-shipping-checkbox',
     dataProtection: '[name="acceptedDataProtection"]',
     submit: 'button[type="submit"]', // scoped to register form
+    /** button revealing a register form hidden behind a login/register chooser ('' = always visible) */
+    reveal: '',
   },
   account: {
     overview: '.account-overview, .account-welcome',

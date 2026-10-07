@@ -59,7 +59,7 @@ export function loadConfig(): ResolvedConfig {
   cached = {
     ...project,
     baseURL,
-    features: { productTaxNotice: true, productDeliveryInfo: true, searchHeadline: true, registrationPhoneNumber: false, productBreadcrumb: true, searchSuggest: true, ...project.features },
+    features: { productTaxNotice: true, productDeliveryInfo: true, searchHeadline: true, registrationPhoneNumber: false, productBreadcrumb: true, searchSuggest: true, productNumberInUrl: true, ...project.features },
     pageClasses: { ...defaultPageClasses, ...project.pageClasses },
     selectors,
     env: {
